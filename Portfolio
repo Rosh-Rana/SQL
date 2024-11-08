@@ -1,0 +1,59 @@
+-- Created by Roshni Rana
+-- Union a and b groups by amounts
+ 
+-- Group A
+ 
+SELECT
+    'A' AS groupings,
+    COUNT(*) AS cust_counts,
+    SUM(prod.amount) AS amount,
+    IFNULL(cust.phn_1, cust.phn_2) AS cell_phone,
+    cust.Gender,
+    cust.name,
+    cust.age,
+    CASE
+        WHEN prod.qty > 30 THEN '> 30'
+        WHEN prod.qty = 30 THEN '30'
+        ELSE '< 30'
+    END AS qty_bucket
+FROM customers cust
+LEFT JOIN products prod ON prod.prod_id = cust.prod_id
+WHERE UPPER(cust.status) = 'A'
+  AND YEAR(prod.sale_dt) IN ('2022', '2023')
+GROUP BY
+    cust.Gender,
+    cust.name,
+    cust.age,
+    cust.phn_1,
+    cust.phn_2,
+    prod.qty
+ 
+UNION
+ 
+-- Group B
+SELECT
+    'B' AS groupings,
+    COUNT(*) AS cust_counts,
+    SUM(prod.amount) AS amnt,
+    IFNULL(cust.phn_1, cust.phn_2) AS cell_phone,
+    cust.Gender,
+    cust.name,
+    cust.age,
+    CASE
+        WHEN prod.qty > 30 THEN '> 30'
+        WHEN prod.qty = 30 THEN '30'
+        ELSE '< 30'
+    END AS qty_bucket
+FROM customers cust
+LEFT JOIN products prod ON prod.prod_id = cust.prod_id
+WHERE UPPER(cust.status) = 'B'
+  AND YEAR(prod.sale_dt) IN ('2022', '2023')
+GROUP BY
+    cust.Gender,
+    cust.name,
+    cust.age,
+    cust.phn_1,
+    cust.phn_2,
+    prod.qty
+ 
+ORDER BY name DESC;
